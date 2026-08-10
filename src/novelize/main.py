@@ -1,20 +1,27 @@
 import json
 from pathlib import Path
-import ollama
+from google import genai
+from google.genai import types
 
-# Adjust these to your local Ollama models
-EXPENSIVE_MODEL = "llama3.3"  # or qwen2.5:32b / mistral-large
-CHEAP_MODEL = "llama3.2"      # or qwen2.5:7b / phi4
+# Use Gemini 2.5 Flash on Google AI Studio
+EXPENSIVE_MODEL = "gemini-3.5-flash-lite"
+CHEAP_MODEL = "gemini-3.5-flash-lite"
+
+client = genai.Client()
 
 
 def llm(model: str, prompt: str, system: str = "") -> str:
-    messages = []
-    if system:
-        messages.append({"role": "system", "content": system})
-    messages.append({"role": "user", "content": prompt})
-
-    res = ollama.chat(model=model, messages=messages)
-    return res["message"]["content"]
+    print(prompt)
+    config = types.GenerateContentConfig(
+        system_instruction=system if system else None,
+    )
+    res = client.models.generate_content(
+        model=model,
+        contents=prompt,
+        config=config,
+    )
+    assert res.text
+    return res.text
 
 
 def run_pipeline(user_prompt: str, base_dir: Path):
