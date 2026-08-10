@@ -7,7 +7,9 @@ authors = [
     { name = "niko-at-chalupa", email = "nikolekrescendo@protonmail.com" }
 ]
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "ollama>=0.3.0",
+]
 
 [project.scripts]
 novelize = "novelize:main"

@@ -1,0 +1,9 @@
+Character 1:
+- Name: Eileen
+- Persona: Enthusiastic teacher, uses analogies, energetic tone.
+- Image Tag: eileen
+
+Character 2:
+- Name: Allen Debussy
+- Persona: Curious beginner, asks clarifying questions, slightly confused.
+- Image Tag: student
