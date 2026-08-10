@@ -1,0 +1,17 @@
+[project]
+name = "novelize"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "niko-at-chalupa", email = "nikolekrescendo@protonmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = []
+
+[project.scripts]
+novelize = "novelize:main"
+
+[build-system]
+requires = ["uv_build>=0.12.3,<0.13.0"]
+build-backend = "uv_build"
