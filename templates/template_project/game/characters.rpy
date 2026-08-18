@@ -1,14 +1,22 @@
 # Character definitions and sprite declarations
 
-# Two main characters:
-define e = Character("Eileen", color="#ffaaaa")
-define l = Character("Logan", color="#aaffaa")
+# The player/narrator (First-person POV)
+define mc = Character("MC", color="#ffffff")
+
+# Ruby
+define r = Character("Ruby", color="#ffaaaa")
 
 # Sprites
-# Eileen
-image eileen happy = "images/eileen_happy.png"
-image eileen sad = "images/eileen_sad.png"
+# Ruby
+image ruby school = "images/ruby/ruby_school.png"
+image ruby school happy = "images/ruby/ruby_school_happy.png"
+image ruby school sad = "images/ruby/ruby_school_sad.png"
+image ruby school flustered = "images/ruby/ruby_school_flustered.png"
 
-# Logan
-image logan happy = "images/logan_happy.png"
-image logan sad = "images/logan_sad.png"
+# Backgrounds
+image bg classroom = "images/backgrounds/bg_classroom.png"
+image bg campus = "images/backgrounds/bg_campus.png"
+
+# Room for new characters (You can define additional characters below)
+# define new_char = Character("New Character Name", color="#aaffaa")
+# image new_char happy = "images/new_char_happy.png"

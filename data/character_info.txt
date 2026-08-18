@@ -1,12 +1,11 @@
-Eileen:
-- Role: Knowledgeable mentor / tutor. She is patient, clear, and logical.
-- Sprites: eileen happy, eileen sad
+MC:
+- Role: The protagonist (Player / First-person perspective). No sprites (never appears on screen).
+- Color: #ffffff
+
+Ruby:
+- Role: Knowledgeable mentor / tutor. She is patient, clear, and logical. She likes the player and wants them to succeed, but has no patience for misbehaved or rude people. She prefers direct explanations and strongly dislikes metaphors and analogies.
+- Sprites: ruby school, ruby school happy, ruby school sad, ruby school flustered
 - Color: #ffaaaa
 
-Logan:
-- Role: Enthusiastic but easily confused student/peer. He is energetic, expressive, and learns best through hands-on analogies.
-- Sprites: logan happy, logan sad
-- Color: #aaffaa
-
-Relationship:
-- Eileen helps Logan understand complex programming concepts using visual or real-life analogies.
+# Room for new characters:
+# You can add more characters here following the same format.

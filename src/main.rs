@@ -69,13 +69,14 @@ async fn run_pipeline(client: &Client, user_prompt: &str, base_dir: &Path) -> Re
                \"title\": \"Introduction to Concepts\",\n\
                \"type\": \"educational\",\n\
                \"setting\": \"classroom\",\n\
-               \"summary\": \"Eileen explains the core concept. Logan gets confused but Eileen uses an analogy.\",\n\
+               \"summary\": \"Ruby explains the core concept directly to the player. The player listens attentively. Ruby shows she likes the player.\",\n\
                \"learning_objectives\": [\"Objective 1\", \"Objective 2\"],\n\
-               \"characters_present\": [\"Eileen\", \"Logan\"]\n\
+               \"characters_present\": [\"Ruby\"]\n\
              }\n\
            ]\n\
          }\n\
          Design a story with 3 to 5 scenes containing a mix of educational core concepts and narrative B-plot character moments.\n\
+         All narrative and educational summary descriptions must be from a first-person perspective ('I', 'me', 'my').\n\
          Output ONLY valid JSON. No markdown blocks, no commentary.";
 
     let storyboard_prompt = format!(
@@ -141,16 +142,20 @@ async fn run_pipeline(client: &Client, user_prompt: &str, base_dir: &Path) -> Re
         scene_prompt.push_str(
             "Output ONLY the Ren'Py code starting with `label <scene_id>:` and ending with `return`. \
              Do not wrap it in markdown code blocks. \
-             Use Eileen (e) and Logan (l) as character short names, showing/hiding sprites appropriately: \
-             - Eileen sprites: eileen happy, eileen sad \
-             - Logan sprites: logan happy, logan sad \
+             The visual novel must be written entirely in the first-person perspective of the player ('I', 'me', 'my'). \
+             Use MC (mc) as character short name for player's spoken dialogue. MC must never appear as a sprite on screen. \
+             Use Ruby (r) as character short name. If other characters are introduced, define them with appropriate short names. \
+             Show/hide sprites appropriately: \
+             - Ruby sprites: ruby school, ruby school happy, ruby school sad, ruby school flustered \
              - Backgrounds: bg classroom, bg campus \
+             - Ruby traits: she likes the player, does NOT like metaphors and analogies, does NOT like misbehaved or rude people. \
              Example:\n\
              label scene_1_intro:\n\
                  scene bg classroom\n\
-                 show eileen happy at left\n\
-                 show logan happy at right\n\
-                 e \"Hello! Today we are learning...\"\n\
+                 show ruby school happy at left\n\
+                 \"I walk into the classroom, and Ruby smiles warmly at me.\"\n\
+                 r \"Hello! Ready to learn? Let's keep it clear and direct today, no silly metaphors.\"\n\
+                 mc \"Yes, thank you. Let's do it.\"\n\
                  return"
         );
 

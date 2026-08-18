@@ -3,10 +3,10 @@
 
 label start:
     show bg classroom
-    show eileen happy at left
-    show logan happy at right
-    e "Welcome to the modular Ren'Py template!"
-    l "This is generated automatically, and split into multiple clean scene files."
+    show ruby school happy at left
+    "I step inside the classroom. Ruby is already there, organizing her notes."
+    r "Welcome! Let's get started right away, without any silly analogies."
+    mc "Sounds good. I'm ready to learn."
     
     # The pipeline will append calls here or we will generate script.rpy dynamically
     return
