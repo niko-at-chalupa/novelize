@@ -3,35 +3,37 @@ screen say(who, what):
     style_prefix "say"
     window:
         id "window"
-        if who is not None:
-            window:
-                style "say_namebox"
-                text who id "who"
-        text what id "what"
+        vbox:
+            spacing 10
+            xfill True
+            if who is not None:
+                window:
+                    style "say_namebox"
+                    text who id "who"
+            text what id "what"
 
-style say_window is default:
+style say_window:
     xalign 0.5
-    xfill True
-    yalign 1.0
-    yminimum 150
-    background "#000000aa"
-    padding (20, 20, 20, 20)
+    yalign 0.98
+    xsize 1180
+    yminimum 180
+    background Solid("#050505ee")
+    padding (25, 20, 25, 20)
 
-style say_namebox is default:
-    xalign 0.05
-    yalign 0.0
-    xoffset 5
-    yoffset -40
-    background "#333333dd"
-    padding (10, 5, 10, 5)
+style say_namebox:
+    background Solid("#882222d0")
+    padding (12, 6, 12, 6)
+    yminimum 35
 
-style say_dialogue is default:
-    xalign 0.0
-    yalign 0.0
-    xoffset 10
-    yoffset 10
+style say_label:
     color "#ffffff"
     size 22
+    bold True
+
+style say_dialogue:
+    color "#e0e0e0"
+    size 22
+    line_spacing 4
 
 # Minimal main menu so we can run the template
 screen main_menu():
