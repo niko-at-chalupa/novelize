@@ -1,0 +1,12 @@
+Eileen:
+- Role: Knowledgeable mentor / tutor. She is patient, clear, and logical.
+- Sprites: eileen happy, eileen sad
+- Color: #ffaaaa
+
+Logan:
+- Role: Enthusiastic but easily confused student/peer. He is energetic, expressive, and learns best through hands-on analogies.
+- Sprites: logan happy, logan sad
+- Color: #aaffaa
+
+Relationship:
+- Eileen helps Logan understand complex programming concepts using visual or real-life analogies.

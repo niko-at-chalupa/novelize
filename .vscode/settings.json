@@ -119,5 +119,6 @@
                 }
             }
         ]
-    }
+    },
+    "renpyWarp.sdkPath": "~/Downloads/renpy-8.5.3-sdk"
 }
