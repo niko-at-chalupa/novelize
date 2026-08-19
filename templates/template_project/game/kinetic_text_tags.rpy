@@ -878,7 +878,21 @@ init python:
                 colorized = CODE_REGEX.sub(code_colorize, escaped)
                 # 3. Add styling (monospaced font and slightly smaller size)
                 styled = "{font=DejaVuSansMono.ttf}{size=-2}" + colorized + "{/size}{/font}"
-                new_list.append((renpy.TEXT_TEXT, styled))
+                
+                # Parse our string containing Ren'Py tags into TEXT_TAG and TEXT_TEXT tuples
+                pattern = re.compile(r"\{[^}]+\}")
+                last_idx = 0
+                for match in pattern.finditer(styled):
+                    start, end = match.span()
+                    if start > last_idx:
+                        text_part = styled[last_idx:start].replace("{{", "{").replace("[[", "[")
+                        new_list.append((renpy.TEXT_TEXT, text_part))
+                    tag_content = match.group(0)[1:-1]
+                    new_list.append((renpy.TEXT_TAG, tag_content))
+                    last_idx = end
+                if last_idx < len(styled):
+                    text_part = styled[last_idx:].replace("{{", "{").replace("[[", "[")
+                    new_list.append((renpy.TEXT_TEXT, text_part))
             else:
                 new_list.append((kind, text))
         return new_list
