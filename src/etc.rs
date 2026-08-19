@@ -27,6 +27,7 @@ pub fn clean_code_block_wrappers(text: &String) -> String {
 mod tests {
     use super::*;
 
+    #[test]
     fn clean_code_block_wrappers_test() {
         let content = r#"iajsfiajisfjajfiajsifjija
         asfiajsifjasfjiajsfjasifjaisf
