@@ -158,6 +158,9 @@ async fn run_pipeline(client: &Client, user_prompt: &str, base_dir: &Path) -> Re
              - {fi=0-3.0-50}fade-in text{/fi}: Fades/slides in character-by-character (good for slow, dramatic delivery). \
              - {swap=WordA@WordB@0.5}WordA{/swap}: Swaps between WordA and WordB every 0.5s. \
              \n\
+             For educational scenes explaining programming, you also have a code block formatting tag: \
+             - {code}your code here{/code}: Renders the text in a monospaced font with syntax highlighting (perfect for displaying brief code snippets or expressions). \
+             \n\
              Example:\n\
              label scene_1_intro:\n\
                  scene bg classroom\n\

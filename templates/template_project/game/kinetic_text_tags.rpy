@@ -46,6 +46,7 @@ default preferences.chaos_on = False  # You can change this to be gui.chaos_text
 init python:
     import random
     import math
+    import re
 
     # This will maintain what styles we want to apply and help us apply them
     class DispTextStyle():
@@ -56,7 +57,7 @@ init python:
         #     before the ""
         #   - Self-closing tags should not be added here and should be handled
         #     in the text tag function.
-        custom_tags = ["omega", "bt", "fi", "sc", "rotat", "chaos", "move"]
+        custom_tags = ["omega", "bt", "fi", "sc", "rotat", "chaos", "move", "code"]
         accepted_tags = ["", "b", "s", "u", "i", "color", "alpha", "font",  "size", "outlinecolor", "plain", 'cps']
         custom_cancel_tags = ["/" + tag for tag in custom_tags]
         cancel_tags = ["/" + tag for tag in accepted_tags]
@@ -827,6 +828,61 @@ init python:
         return new_list
     """
 
+    # Keywords and properties for code colorization
+    CODE_KEYWORDS = {
+        'and', 'as', 'assert', 'async', 'await', 'break', 'class', 'continue', 'def',
+        'del', 'elif', 'else', 'except', 'finally', 'for', 'from', 'global', 'if',
+        'import', 'in', 'is', 'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise',
+        'return', 'try', 'while', 'with', 'yield', 'True', 'False', 'None',
+        'label', 'define', 'default', 'init', 'python', 'show', 'hide', 'scene',
+        'image', 'jump', 'call', 'menu', 'play', 'stop', 'queue', 'voice', 'window',
+        'transform', 'screen', 'style', 'frame', 'hbox', 'vbox', 'text', 'button',
+        'textbutton', 'bar', 'vbar', 'viewport', 'vpgrid', 'grid', 'use', 'add',
+    }
+
+    CODE_PROPERTIES = {
+        'action', 'align', 'xalign', 'yalign', 'pos', 'xpos', 'ypos',
+        'anchor', 'xanchor', 'yanchor', 'size', 'color', 'font',
+        'background', 'foreground', 'width', 'height', 'area',
+        'xsize', 'ysize', 'xysize', 'spacing', 'padding', 'margin',
+        'idle', 'hover', 'selected', 'clicked', 'hovered',
+    }
+
+    CODE_REGEX = re.compile(
+        r"(?P<string>\"([^\"]|\\.)*(?<!\\)\")"
+        r"|(?P<string2>'([^']|\\.)*(?<!\\)')"
+        r"|(?P<comment>#.*)"
+        r"|(?P<word>\b[_a-zA-Z0-9]+\b)"
+    )
+
+    def code_colorize(m):
+        if m.group("string") or m.group("string2"):
+            return "{color=#060}" + m.group(0) + "{/color}"
+        if m.group("comment"):
+            return "{color=#600}" + m.group(0) + "{/color}"
+        word = m.group("word")
+        if word:
+            if word in CODE_KEYWORDS:
+                return "{color=#840}" + m.group(0) + "{/color}"
+            elif word in CODE_PROPERTIES:
+                return "{color=#048}" + m.group(0) + "{/color}"
+        return m.group(0)
+
+    def code_tag(tag, argument, contents):
+        new_list = []
+        for kind, text in contents:
+            if kind == renpy.TEXT_TEXT:
+                # 1. Escape { and [ so they aren't parsed as text tags
+                escaped = text.replace("{", "{{").replace("[", "[[")
+                # 2. Colorize using the regex
+                colorized = CODE_REGEX.sub(code_colorize, escaped)
+                # 3. Add styling (monospaced font and slightly smaller size)
+                styled = "{font=DejaVuSansMono.ttf}{size=-2}" + colorized + "{/size}{/font}"
+                new_list.append((renpy.TEXT_TEXT, styled))
+            else:
+                new_list.append((kind, text))
+        return new_list
+
     # Define our new text tags
     config.custom_text_tags["bt"] = bounce_tag
     config.custom_text_tags["fi"] = fade_in_tag
@@ -836,6 +892,8 @@ init python:
     config.custom_text_tags["swap"] = swap_tag
     config.custom_text_tags["move"] = move_tag
     config.custom_text_tags["omega"] = omega_tag
+    config.custom_text_tags["code"] = code_tag
     config.self_closing_custom_text_tags["para"] = paragraph_tag
     # Template tag function
     #config.custom_text_tags[""] = _tag
+
