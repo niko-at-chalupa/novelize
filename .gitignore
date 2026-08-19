@@ -1,3 +1,4 @@
 # Added by cargo
 /target
 output_game
+.vscode
