@@ -1,7 +1,7 @@
 mod llm;
 mod story;
 mod etc;
-use etc::copy_dir_all;
+use etc::{copy_dir_all, clean_code_block_wrappers};
 use story::Storyboard;
 use std::error::Error;
 use std::fs;
@@ -45,16 +45,10 @@ async fn run_pipeline(client: &Client, user_prompt: &str, base_dir: &Path) -> Re
         user_prompt, char_info
     );
 
-    let raw_storyboard = llm(client, EXPENSIVE_MODEL, &storyboard_prompt, storyboard_system).await?;
-    
-    // Clean JSON markdown tags if present
-    let cleaned_json = raw_storyboard
-        .trim()
-        .trim_start_matches("```json")
-        .trim_start_matches("```")
-        .trim_end_matches("```")
-        .trim()
-        .to_string();
+    let cleaned_json = {
+        let raw_storyboard = llm(client, EXPENSIVE_MODEL, &storyboard_prompt, storyboard_system).await?;
+        clean_code_block_wrappers(&raw_storyboard)
+    };
 
     let storyboard: Storyboard = serde_json::from_str(&cleaned_json)?;
     println!("[1/4] Storyboard successfully planned with {} scenes.", storyboard.scenes.len());
@@ -129,21 +123,15 @@ async fn run_pipeline(client: &Client, user_prompt: &str, base_dir: &Path) -> Re
                  return"
         );
 
-        let scene_script = llm(
-            client,
-            CHEAP_MODEL,
-            &scene_prompt,
-            "You are an expert Ren'Py writer. Write clean dialogue and sprite positions. Output ONLY the raw Ren'Py script for the requested label. No markdown code blocks."
-        ).await?;
-
-        // Clean any code block wrappers
-        let clean_script = scene_script
-            .trim()
-            .trim_start_matches("```renpy")
-            .trim_start_matches("```")
-            .trim_end_matches("```")
-            .trim()
-            .to_string();
+        let clean_script = {
+            let scene_script = llm(
+                client,
+                CHEAP_MODEL,
+                &scene_prompt,
+                "You are an expert Ren'Py writer. Write clean dialogue and sprite positions. Output ONLY the raw Ren'Py script for the requested label. No markdown code blocks."
+            ).await?;
+            clean_code_block_wrappers(&scene_script)
+        };
 
         let scene_file_name = format!("{}.rpy", scene.id);
         fs::write(scenes_dir.join(&scene_file_name), &clean_script)?;
