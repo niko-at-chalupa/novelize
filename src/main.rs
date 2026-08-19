@@ -1,62 +1,21 @@
+mod llm;
+mod story;
+mod etc;
+use etc::copy_dir_all;
+use story::Storyboard;
 use std::error::Error;
 use std::fs;
 use std::path::{Path, PathBuf};
-use serde::{Deserialize, Serialize};
 
-use google_ai_rs::{Client, GenerativeModel};
+use llm::llm;
+use google_ai_rs::Client;
 
 const EXPENSIVE_MODEL: &str = "gemini-3.5-flash-lite";
 const CHEAP_MODEL: &str = "gemini-3.5-flash-lite";
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct SceneOutline {
-    id: String,
-    title: String,
-    #[serde(rename = "type")]
-    scene_type: String, // "educational" or "narrative"
-    setting: String, // "classroom" or "campus"
-    summary: String,
-    learning_objectives: Vec<String>,
-    characters_present: Vec<String>,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-struct Storyboard {
-    scenes: Vec<SceneOutline>,
-}
-
-async fn llm(client: &Client, model: &str, prompt: &str, system: &str) -> Result<String, Box<dyn Error>> {
-    println!("\n--- Prompt ---\n{prompt}\n--------------");
-
-    let mut gen_model: GenerativeModel = client.generative_model(model);
-    if !system.is_empty() {
-        gen_model = gen_model.with_system_instruction(system);
-    }
-
-    let response = gen_model.generate_content(prompt).await?;
-    let text = response.text().to_string();
-    Ok(text)
-}
-
-/// Helper to recursively copy directories
-fn copy_dir_all(src: impl AsRef<Path>, dst: impl AsRef<Path>) -> std::io::Result<()> {
-    fs::create_dir_all(&dst)?;
-    for entry in fs::read_dir(src)? {
-        let entry = entry?;
-        let ty = entry.file_type()?;
-        if ty.is_dir() {
-            copy_dir_all(entry.path(), dst.as_ref().join(entry.file_name()))?;
-        } else {
-            fs::copy(entry.path(), dst.as_ref().join(entry.file_name()))?;
-        }
-    }
-    Ok(())
-}
-
 async fn run_pipeline(client: &Client, user_prompt: &str, base_dir: &Path) -> Result<(), Box<dyn Error>> {
     let char_info = fs::read_to_string(base_dir.join("data/character_info.txt"))?;
     
-    // --- Step 1: Storyboard / Outline Generation ---
     println!("[1/4] Generating structured Storyboard Outline...");
     let storyboard_system = 
         "You are an expert visual novel designer and curriculum developer.\n\
@@ -110,7 +69,6 @@ async fn run_pipeline(client: &Client, user_prompt: &str, base_dir: &Path) -> Re
     let scenes_dir = output_game_dir.join("game/scenes");
     fs::create_dir_all(&scenes_dir)?;
 
-    // --- Step 2: Generate Each Scene Independently ---
     let mut prev_scene_summary: Option<String> = None;
     let mut scene_ids = Vec::new();
 
