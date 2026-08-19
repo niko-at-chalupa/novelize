@@ -150,12 +150,12 @@ async fn run_pipeline(client: &Client, user_prompt: &str, base_dir: &Path) -> Re
              - Backgrounds: bg classroom, bg campus \
              - Ruby traits: she likes the player, does NOT like metaphors and analogies, does NOT like misbehaved or rude people. \
              \n\
-             You can use kinetic text tags to animate text in character dialogue or narration (use them sparingly, for emphasis on single words or short phrases): \
-             - {bt=10}bouncing text{/bt}: Bounces text up/down (great for excitement, energy, or laughing). \
-             - {sc=3}shaky text{/sc}: Shakes text in place (great for anger, nervousness, fear, or intensity). \
+             You can use kinetic text tags to animate text in character dialogue or narration. You must use them EXTREMELY sparingly (no more than once or twice in the entire scene), and ONLY to emphasize strong, specific emotions (such as excitement, panic, anger, or extreme nervousness) on single words or short phrases: \
+             - {bt=10}bouncing text{/bt}: Bounces text up/down (great for excitement, joy, or laughing). \
+             - {sc=3}shaky text{/sc}: Shakes text in place (great for anger, nervousness, fear, or panic). \
              - {rotat=300}rotating text{/rotat}: Rotates text. \
-             - {chaos}chaos text{/chaos}: Randomizes fonts/colors/sizes per frame. \
-             - {fi=0-3.0-50}fade-in text{/fi}: Fades/slides in character-by-character (good for slow/dramatic reveal). \
+             - {chaos}chaos text{/chaos}: Randomizes fonts/colors/sizes per frame (good for madness/confusion). \
+             - {fi=0-3.0-50}fade-in text{/fi}: Fades/slides in character-by-character (good for slow, dramatic delivery). \
              - {swap=WordA@WordB@0.5}WordA{/swap}: Swaps between WordA and WordB every 0.5s. \
              \n\
              Example:\n\
