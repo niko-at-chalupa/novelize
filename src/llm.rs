@@ -1,7 +1,12 @@
 use google_ai_rs::{Client, GenerativeModel};
 use std::error::Error;
 
-pub async fn llm(client: &Client, model: &str, prompt: &str, system: &str) -> Result<String, Box<dyn Error>> {
+pub async fn llm(
+    client: &Client,
+    model: &str,
+    prompt: &str,
+    system: &str,
+) -> Result<String, Box<dyn Error>> {
     println!("\n--- Prompt ---\n{prompt}\n--------------");
 
     let mut gen_model: GenerativeModel = client.generative_model(model);

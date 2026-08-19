@@ -1,6 +1,6 @@
 use regex::Regex;
-use std::path::Path;
 use std::fs;
+use std::path::Path;
 
 /// Helper to recursively copy directories
 pub fn copy_dir_all(src: impl AsRef<Path>, dst: impl AsRef<Path>) -> std::io::Result<()> {
@@ -18,8 +18,12 @@ pub fn copy_dir_all(src: impl AsRef<Path>, dst: impl AsRef<Path>) -> std::io::Re
 }
 
 pub fn clean_code_block_wrappers(text: &String) -> String {
-    let re = Regex::new(r"(?m)^```[^\r\n]*\r?\n?").unwrap();    
-    re.replace(&text, "").into_owned().trim_end_matches("```").trim().to_string()
+    let re = Regex::new(r"(?m)^```[^\r\n]*\r?\n?").unwrap();
+    re.replace(&text, "")
+        .into_owned()
+        .trim_end_matches("```")
+        .trim()
+        .to_string()
 }
 
 #[cfg(test)]
@@ -32,11 +36,7 @@ mod tests {
         asfiajsifjasfjiajsfjasifjaisf
         asfiajisfajifsjiaifjiajsfijs
         asdjasidjijd"#;
-        let prefixes = vec![
-            "```renpy",
-            "```json",
-            "```",
-        ];
+        let prefixes = vec!["```renpy", "```json", "```"];
         let end = "```";
 
         let mut samples: Vec<String> = vec![];
@@ -45,9 +45,7 @@ mod tests {
         // {content}
         // {end}
         for prefix in prefixes {
-            samples.push(
-                format!("{}\n{}\n{}", prefix, content, end)
-            );
+            samples.push(format!("{}\n{}\n{}", prefix, content, end));
         }
         // {content}
         samples.push(content.to_string());
