@@ -149,13 +149,22 @@ async fn run_pipeline(client: &Client, user_prompt: &str, base_dir: &Path) -> Re
              - Ruby sprites: ruby school, ruby school happy, ruby school sad, ruby school flustered \
              - Backgrounds: bg classroom, bg campus \
              - Ruby traits: she likes the player, does NOT like metaphors and analogies, does NOT like misbehaved or rude people. \
+             \n\
+             You can use kinetic text tags to animate text in character dialogue or narration (use them sparingly, for emphasis on single words or short phrases): \
+             - {bt=10}bouncing text{/bt}: Bounces text up/down (great for excitement, energy, or laughing). \
+             - {sc=3}shaky text{/sc}: Shakes text in place (great for anger, nervousness, fear, or intensity). \
+             - {rotat=300}rotating text{/rotat}: Rotates text. \
+             - {chaos}chaos text{/chaos}: Randomizes fonts/colors/sizes per frame. \
+             - {fi=0-3.0-50}fade-in text{/fi}: Fades/slides in character-by-character (good for slow/dramatic reveal). \
+             - {swap=WordA@WordB@0.5}WordA{/swap}: Swaps between WordA and WordB every 0.5s. \
+             \n\
              Example:\n\
              label scene_1_intro:\n\
                  scene bg classroom\n\
                  show ruby school happy at left\n\
                  \"I walk into the classroom, and Ruby smiles warmly at me.\"\n\
-                 r \"Hello! Ready to learn? Let's keep it clear and direct today, no silly metaphors.\"\n\
-                 mc \"Yes, thank you. Let's do it.\"\n\
+                 r \"Hello! Ready to learn? Let's keep it {bt=8}clear and direct{/bt} today, no silly metaphors.\"\n\
+                 mc \"{sc=2}Yes, thank you.{/sc} Let's do it.\"\n\
                  return"
         );
 
