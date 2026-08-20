@@ -1,3 +1,4 @@
+mod renpy;
 mod etc;
 mod llm;
 mod story;
@@ -13,6 +14,9 @@ use clap::Parser;
 struct Args {
     #[arg(short, long)]
     topic: String,
+
+    #[arg(short, long)]
+    renpy_sdk: PathBuf,
 }
 
 
