@@ -5,6 +5,7 @@ use std::path::Path;
 use crate::story::Storyboard;
 use google_ai_rs::Client;
 use regex::Regex;
+use crate::renpy::run_renpy_lint;
 
 /// Helper to recursively copy directories
 fn copy_dir_all(src: impl AsRef<Path>, dst: impl AsRef<Path>) -> std::io::Result<()> {
@@ -65,11 +66,74 @@ mod tests {
 const EXPENSIVE_MODEL: &str = "gemini-3.5-flash-lite";
 const CHEAP_MODEL: &str = "gemini-3.5-flash-lite";
 
+#[derive(serde::Deserialize)]
+struct LintTriage {
+    affected_scene_ids: Vec<String>,
+}
+
+async fn triage_lint_errors(
+    client: &Client,
+    lint_report: &str,
+    known_scene_ids: &[String],
+) -> Result<Vec<String>, Box<dyn Error>> {
+    let system = "You are a Ren'Py build error triager.\n\
+        Given a raw `renpy lint` report and a list of known scene label ids, \
+        identify which scene ids the errors belong to.\n\
+        Output ONLY valid JSON matching this schema, no markdown, no commentary:\n\
+        { \"affected_scene_ids\": [\"scene_1_intro\"] }\n\
+        Only include ids from the known list. If an error can't be attributed to a specific \
+        scene (e.g. a global script.rpy issue), omit it.";
+
+    let prompt = format!(
+        "Known scene ids: {:?}\n\nLint report:\n{}\n\nWhich scene ids need fixing?",
+        known_scene_ids, lint_report
+    );
+
+    let raw = llm(client, CHEAP_MODEL, &prompt, system).await?;
+    let cleaned = clean_code_block_wrappers(&raw);
+    let triage: LintTriage = serde_json::from_str(&cleaned)?;
+    Ok(triage.affected_scene_ids)
+}
+
+async fn fix_scene_file(
+    client: &Client,
+    scenes_dir: &Path,
+    scene_id: &str,
+    lint_report: &str,
+) -> Result<(), Box<dyn Error>> {
+    let file_path = scenes_dir.join(format!("{}.rpy", scene_id));
+    let current_script = fs::read_to_string(&file_path)?;
+
+    let system = "You are an expert Ren'Py debugger.\n\
+        You will be given a broken Ren'Py scene script and the full lint report for the project.\n\
+        Fix ONLY the errors in this script that are attributable to it (e.g. undefined images, \
+        malformed tags, bad label/menu syntax, unclosed text tags).\n\
+        Preserve the dialogue, structure, characters, and intent exactly — do not rewrite content \
+        that isn't broken.\n\
+        Output ONLY the corrected raw Ren'Py script for this label, no markdown code blocks, \
+        no commentary.";
+
+    let prompt = format!(
+        "Scene id: {}\n\n\
+         Current script:\n{}\n\n\
+         Full project lint report (only fix parts relevant to this scene):\n{}",
+        scene_id, current_script, lint_report
+    );
+
+    let raw_fixed = llm(client, CHEAP_MODEL, &prompt, system).await?;
+    let fixed_script = clean_code_block_wrappers(&raw_fixed);
+    fs::write(&file_path, fixed_script)?;
+
+    Ok(())
+}
+
 pub async fn run_pipeline(
     client: &Client,
     user_prompt: &str,
     base_dir: &Path,
     output_game_dir: &Path,
+    max_fix_attempts: u8,
+    sdk_path: &Path,
 ) -> Result<(), Box<dyn Error>> {
     let char_info = fs::read_to_string(base_dir.join("data/character_info.txt"))?;
 
@@ -237,11 +301,50 @@ pub async fn run_pipeline(
 
     fs::write(output_game_dir.join("game/script.rpy"), script_content)?;
 
-    // --- Step 4: Verification ---
-    println!(
-        "[4/4] Project successfully modularized and built at: {}",
-        output_game_dir.display()
-    );
+    // --- Step 4: Verification (and linting) ---
+    println!("[4/4] Verifying generated project with Ren'Py lint...");
+
+    for attempt in 1..=max_fix_attempts {
+        let lint_output = run_renpy_lint(&sdk_path, &output_game_dir)?;
+        if lint_output.status.success() {
+            println!("[4/4] Lint passed on attempt {}.", attempt);
+            break;
+        }
+
+        if attempt == max_fix_attempts {
+            return Err(format!(
+                "Ren'Py lint still failing after {} fix attempts:\n{}",
+                max_fix_attempts,
+                String::from_utf8_lossy(&lint_output.stdout)
+            )
+            .into());
+        }
+
+        let lint_report = format!(
+            "{}\n{}",
+            String::from_utf8_lossy(&lint_output.stdout),
+            String::from_utf8_lossy(&lint_output.stderr)
+        );
+
+        println!(
+            "[4/4] Lint failed (attempt {}/{}). Diagnosing affected scenes...",
+            attempt, max_fix_attempts
+        );
+
+        let affected = triage_lint_errors(client, &lint_report, &scene_ids).await?;
+        if affected.is_empty() {
+            return Err(format!(
+                "Lint failed but triage identified no fixable scene files:\n{}",
+                lint_report
+            )
+            .into());
+        }
+
+        for scene_id in &affected {
+            println!("[4/4]   Repairing scene: {}", scene_id);
+            fix_scene_file(client, &scenes_dir, scene_id, &lint_report).await?;
+        }
+    }
 
     Ok(())
 }

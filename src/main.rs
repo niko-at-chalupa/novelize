@@ -20,6 +20,9 @@ struct Args {
 
     #[arg(short, long, default_value = "output_game")]
     output_game_dir: PathBuf,
+
+    #[arg(short, long, default_value_t = 3)]
+    max_fix_attempts: u8,
 }
 
 fn base_dir() -> Result<PathBuf, Box<dyn Error>> {
@@ -51,7 +54,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         panic!("renpy sdk provided invalid")
     }
     
-    run_pipeline(&client, &args.topic, &base_dir, &args.output_game_dir).await?;
+    run_pipeline(&client, &args.topic, &base_dir, &args.output_game_dir, args.max_fix_attempts, &args.renpy_sdk).await?;
 
     Ok(())
 }
