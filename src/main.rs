@@ -8,6 +8,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use story::Storyboard;
 use clap::Parser;
+use renpy::is_valid_renpy_sdk;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -17,6 +18,9 @@ struct Args {
 
     #[arg(short, long)]
     renpy_sdk: PathBuf,
+
+    #[arg(short, long, default_value = "output_game")]
+    output_game_dir: PathBuf,
 }
 
 
@@ -30,6 +34,7 @@ async fn run_pipeline(
     client: &Client,
     user_prompt: &str,
     base_dir: &Path,
+    output_game_dir: &Path,
 ) -> Result<(), Box<dyn Error>> {
     let char_info = fs::read_to_string(base_dir.join("data/character_info.txt"))?;
 
@@ -79,7 +84,6 @@ async fn run_pipeline(
     );
 
     // Create target game folder by copying our template project
-    let output_game_dir = base_dir.join("output_game");
     if output_game_dir.exists() {
         let _ = fs::remove_dir_all(&output_game_dir);
     }
@@ -208,7 +212,6 @@ async fn run_pipeline(
 }
 
 fn base_dir() -> Result<PathBuf, Box<dyn Error>> {
-    // Locate the Cargo.toml workspace directory
     let mut dir = std::env::current_dir()?;
     while !dir.join("Cargo.toml").exists() {
         if let Some(parent) = dir.parent() {
@@ -229,7 +232,15 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     let args = Args::parse();
 
-    run_pipeline(&client, &args.topic, &base_dir).await?;
+    if args.output_game_dir.exists() {
+        panic!("output_game_dir already exists")
+    }
+
+    if !is_valid_renpy_sdk(&args.renpy_sdk) {
+        panic!("renpy sdk provided invalid")
+    }
+    
+    run_pipeline(&client, &args.topic, &base_dir, &args.output_game_dir).await?;
 
     Ok(())
 }
