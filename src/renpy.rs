@@ -16,9 +16,9 @@ pub fn run_renpy_lint(sdk_path: &Path, project_path: &Path) -> std::io::Result<O
     let os = std::env::consts::OS;
     let renpy_executable: &Path = {
         if os == "windows" {
-            &project_path.join("renpy.exe")
+            &sdk_path.join("renpy.exe")
         } else {
-            &project_path.join("renpy.sh")
+            &sdk_path.join("renpy.sh")
         }
     };
 
