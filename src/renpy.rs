@@ -1,4 +1,4 @@
-use std::process::{Command, ExitStatus};
+use std::process::{Command, Output};
 use std::path::Path;
 
 pub fn is_valid_renpy_sdk(sdk_path: &Path) -> bool {
@@ -12,7 +12,7 @@ pub fn is_valid_renpy_sdk(sdk_path: &Path) -> bool {
     renpy_py.is_file() && lib_dir.is_dir()
 }
 
-pub fn run_renpy_lint(sdk_path: &Path, project_path: &Path) -> std::io::Result<ExitStatus> {
+pub fn run_renpy_lint(sdk_path: &Path, project_path: &Path) -> std::io::Result<Output> {
     let os = std::env::consts::OS;
     let renpy_executable: &Path = {
         if os == "windows" {
@@ -31,5 +31,5 @@ pub fn run_renpy_lint(sdk_path: &Path, project_path: &Path) -> std::io::Result<E
         .arg("lint")
         .env("SDL_AUDIODRIVER", "dummy")
         .env("SDL_VIDEODRIVER", "dummy")
-        .status()
+        .output()
 }
