@@ -6,6 +6,15 @@ use std::error::Error;
 use std::fs;
 use std::path::{Path, PathBuf};
 use story::Storyboard;
+use clap::Parser;
+
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    #[arg(short, long)]
+    topic: String,
+}
+
 
 use google_ai_rs::Client;
 use llm::llm;
@@ -213,9 +222,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
         Client::new(std::env::var("GEMINI_API_KEY").expect("GEMINI_API_KEY unset")).await?;
 
     let base_dir = base_dir()?;
-    let user_prompt = "How does concurrency work in Rust?";
 
-    run_pipeline(&client, user_prompt, &base_dir).await?;
+    let args = Args::parse();
+
+    run_pipeline(&client, &args.topic, &base_dir).await?;
 
     Ok(())
 }
