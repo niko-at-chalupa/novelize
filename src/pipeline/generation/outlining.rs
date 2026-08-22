@@ -30,8 +30,12 @@ The JSON must match this exact schema:
 }}
 Design a story with {} scenes containing a mix of educational core concepts and narrative B-plot character moments.
 All narrative and educational summary descriptions must be from a first-person perspective ('I', 'me', 'my').
-Output ONLY valid JSON. No markdown blocks, no commentary."#,
-        num_scenes
+Output ONLY valid JSON. No markdown blocks, no commentary. Do NOT introduce characters that are not listed in the character info.
+
+Character Info:
+    {}"#,
+        num_scenes,
+        char_info
     );
 
     let storyboard_prompt = format!(
