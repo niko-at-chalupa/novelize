@@ -1,7 +1,5 @@
 mod renpy;
 use google_ai_rs::Client;
-mod llm;
-mod story;
 mod pipeline;
 use std::path::PathBuf;
 use clap::Parser;
