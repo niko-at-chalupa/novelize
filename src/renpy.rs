@@ -1,5 +1,5 @@
-use std::process::{Command, Output};
 use std::path::Path;
+use std::process::{Command, Output};
 
 pub fn is_valid_renpy_sdk(sdk_path: &Path) -> bool {
     if !sdk_path.is_dir() {

@@ -1,16 +1,16 @@
 use std::error::Error;
 
-use google_ai_rs::Client;
 use super::super::etc::clean_code_block_wrappers;
 use super::super::story::SceneOutline;
 use super::llm;
+use google_ai_rs::Client;
 
 pub async fn generate_scene(
-    model: &str, 
-    client: &Client, 
-    scene: &SceneOutline, 
-    prev_scene_summary: Option<String>, 
-    char_info: &str
+    model: &str,
+    client: &Client,
+    scene: &SceneOutline,
+    prev_scene_summary: Option<String>,
+    char_info: &str,
 ) -> Result<String, Box<dyn Error>> {
     let mut scene_prompt = format!(
         "Generate a Ren'Py scene script for: \"{}\".\n\

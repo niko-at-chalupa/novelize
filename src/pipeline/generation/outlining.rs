@@ -1,10 +1,15 @@
-use std::error::Error;
 use super::super::etc::clean_code_block_wrappers;
 use super::super::story::Storyboard;
-use google_ai_rs::Client;
 use super::llm;
+use google_ai_rs::Client;
+use std::error::Error;
 
-pub async fn generate_storyboard(model: &str, client: &Client, topic: &str, char_info: &str) -> Result<Storyboard, Box<dyn Error>> {
+pub async fn generate_storyboard(
+    model: &str,
+    client: &Client,
+    topic: &str,
+    char_info: &str,
+) -> Result<Storyboard, Box<dyn Error>> {
     let storyboard_system = r#"You are an expert visual novel designer and curriculum developer.
          Generate a structured storyboard/outline for a visual novel in JSON format.
          The JSON must match this exact schema:
@@ -33,13 +38,7 @@ pub async fn generate_storyboard(model: &str, client: &Client, topic: &str, char
     );
 
     let cleaned_json = {
-        let raw_storyboard = llm(
-            client,
-            model,
-            &storyboard_prompt,
-            storyboard_system,
-        )
-        .await?;
+        let raw_storyboard = llm(client, model, &storyboard_prompt, storyboard_system).await?;
         clean_code_block_wrappers(&raw_storyboard)
     };
 

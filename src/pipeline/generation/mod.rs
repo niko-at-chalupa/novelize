@@ -1,6 +1,6 @@
+pub mod linting;
 pub mod outlining;
 pub mod scenes;
-pub mod linting;
 
 use google_ai_rs::{Client, GenerativeModel};
 use std::error::Error;

@@ -1,11 +1,11 @@
 mod renpy;
 use google_ai_rs::Client;
 mod pipeline;
-use std::path::PathBuf;
 use clap::Parser;
+use pipeline::run_pipeline;
 use renpy::is_valid_renpy_sdk;
 use std::error::Error;
-use pipeline::run_pipeline;
+use std::path::PathBuf;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -51,8 +51,16 @@ async fn main() -> Result<(), Box<dyn Error>> {
     if !is_valid_renpy_sdk(&args.renpy_sdk) {
         panic!("renpy sdk provided invalid")
     }
-    
-    run_pipeline(&client, &args.topic, &base_dir, &args.output_game_dir, args.max_fix_attempts, &args.renpy_sdk).await?;
+
+    run_pipeline(
+        &client,
+        &args.topic,
+        &base_dir,
+        &args.output_game_dir,
+        args.max_fix_attempts,
+        &args.renpy_sdk,
+    )
+    .await?;
 
     Ok(())
 }

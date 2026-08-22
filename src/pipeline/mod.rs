@@ -1,14 +1,13 @@
+mod etc;
 mod generation;
 mod story;
-mod etc;
-use etc::{copy_dir_all, clean_code_block_wrappers};
+use crate::pipeline::generation::outlining::generate_storyboard;
+use crate::renpy::run_renpy_lint;
+use etc::{clean_code_block_wrappers, copy_dir_all};
+use google_ai_rs::Client;
 use std::error::Error;
 use std::fs;
 use std::path::Path;
-use google_ai_rs::Client;
-use crate::pipeline::generation::outlining::generate_storyboard;
-use crate::renpy::run_renpy_lint;
-
 
 const EXPENSIVE_MODEL: &str = "gemini-3.5-flash-lite";
 const CHEAP_MODEL: &str = "gemini-3.5-flash-lite";
@@ -24,19 +23,14 @@ pub async fn run_pipeline(
     let char_info = fs::read_to_string(base_dir.join("data/character_info.txt"))?;
 
     println!("[1/4] Generating structured Storyboard Outline...");
-    
-    let storyboard = generate_storyboard(
-        EXPENSIVE_MODEL, 
-        client, 
-        topic,
-        &char_info
-    ).await?;
+
+    let storyboard = generate_storyboard(EXPENSIVE_MODEL, client, topic, &char_info).await?;
 
     // Create target game folder by copying our template project
     if output_game_dir.exists() {
         let _ = fs::remove_dir_all(&output_game_dir);
     }
-    
+
     copy_dir_all(
         base_dir.join("templates/template_project"),
         &output_game_dir,
@@ -58,12 +52,13 @@ pub async fn run_pipeline(
         );
 
         let script = generation::scenes::generate_scene(
-            CHEAP_MODEL, 
-            client, 
-            &scene, 
-            prev_scene_summary, 
-            &char_info
-        ).await?;
+            CHEAP_MODEL,
+            client,
+            &scene,
+            prev_scene_summary,
+            &char_info,
+        )
+        .await?;
 
         let scene_file_name = format!("{}.rpy", scene.id);
         fs::write(scenes_dir.join(&scene_file_name), &script)?;
@@ -120,7 +115,13 @@ label start:
             attempt, max_fix_attempts
         );
 
-        let affected = generation::linting::triage_lint_errors(EXPENSIVE_MODEL, client, &lint_report, &scene_ids).await?;
+        let affected = generation::linting::triage_lint_errors(
+            EXPENSIVE_MODEL,
+            client,
+            &lint_report,
+            &scene_ids,
+        )
+        .await?;
         if affected.is_empty() {
             return Err(format!(
                 "Lint failed but triage identified no fixable scene files:\n{}",
@@ -131,7 +132,14 @@ label start:
 
         for scene_id in &affected {
             println!("[4/4]   Repairing scene: {}", scene_id);
-            generation::linting::fix_scene_file(EXPENSIVE_MODEL, client, &scenes_dir, scene_id, &lint_report).await?;
+            generation::linting::fix_scene_file(
+                EXPENSIVE_MODEL,
+                client,
+                &scenes_dir,
+                scene_id,
+                &lint_report,
+            )
+            .await?;
         }
     }
 
