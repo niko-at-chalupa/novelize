@@ -19,12 +19,13 @@ pub async fn run_pipeline(
     output_game_dir: &Path,
     max_fix_attempts: u8,
     sdk_path: &Path,
+    num_scenes: u8,
 ) -> Result<(), Box<dyn Error>> {
     let char_info = fs::read_to_string(base_dir.join("data/character_info.txt"))?;
 
     println!("[1/4] Generating structured Storyboard Outline...");
 
-    let storyboard = generate_storyboard(EXPENSIVE_MODEL, client, topic, &char_info).await?;
+    let storyboard = generate_storyboard(EXPENSIVE_MODEL, client, topic, &char_info, num_scenes).await?;
 
     // Create target game folder by copying our template project
     if output_game_dir.exists() {

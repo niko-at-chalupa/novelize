@@ -21,6 +21,9 @@ struct Args {
 
     #[arg(short, long, default_value_t = 3)]
     max_fix_attempts: u8,
+
+    #[arg(short, long, default_value_t = 4)]
+    num_scenes: u8,
 }
 
 fn base_dir() -> Result<PathBuf, Box<dyn Error>> {
@@ -59,6 +62,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         &args.output_game_dir,
         args.max_fix_attempts,
         &args.renpy_sdk,
+        args.num_scenes,
     )
     .await?;
 
