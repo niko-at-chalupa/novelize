@@ -1,4 +1,5 @@
 mod renpy;
+use dotenvy::dotenv;
 use google_ai_rs::Client;
 mod pipeline;
 use clap::Parser;
@@ -40,6 +41,10 @@ fn base_dir() -> Result<PathBuf, Box<dyn Error>> {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    if let Err(_) = dotenv() {
+        println!("warning: no env file found...");
+    };
+
     let client =
         Client::new(std::env::var("GEMINI_API_KEY").expect("GEMINI_API_KEY unset")).await?;
 
