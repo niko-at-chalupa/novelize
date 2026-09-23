@@ -11,7 +11,7 @@ pub async fn llm(
     prompt: &str,
     system: &str,
 ) -> Result<String, Box<dyn Error>> {
-    println!("\n--- Prompt ---\n{prompt}\n--------------");
+    tracing::debug!("\n--- Prompt ---\n{prompt}\n--------------");
 
     let mut gen_model: GenerativeModel = client.generative_model(model);
     if !system.is_empty() {

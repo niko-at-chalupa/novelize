@@ -42,8 +42,15 @@ fn base_dir() -> Result<PathBuf, Box<dyn Error>> {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     if let Err(_) = dotenv() {
-        println!("warning: no env file found...");
-    };
+        tracing::warn!("no env file found...");
+    }
+
+    tracing_subscriber::fmt()
+        .with_env_filter(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("info"))
+        )
+        .init();
 
     let client =
         Client::new(std::env::var("GEMINI_API_KEY").expect("GEMINI_API_KEY unset")).await?;
