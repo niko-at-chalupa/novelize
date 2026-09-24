@@ -1,3 +1,4 @@
+mod template;
 mod renpy;
 use dotenvy::dotenv;
 use google_ai_rs::Client;

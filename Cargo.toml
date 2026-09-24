@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+anyhow = "1.0.104"
 clap = { version = "4.6.6", features = ["derive"] }
 dotenvy = "0.15.7"
 google-ai-rs = "0.3.0"
@@ -13,5 +14,6 @@ serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.151"
 strum = { version = "0.28.0", features = ["derive"] }
 tokio = "1.53.1"
+toml = "1.1.6"
 tracing = { version = "0.1.44" }
 tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }

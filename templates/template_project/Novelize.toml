@@ -1,0 +1,13 @@
+[metadata]
+name = "novelize"
+stylized-name = "Novelize"
+version = "0.1.0"
+
+# This lists out _RELATIVE_ paths to things. Everything's required. No path can
+# go underneath this directory.
+[paths]
+game = "game"
+# Loaded into the model's context when generating dialogue or narrative.
+context = [
+    "character_info.txt",
+]
