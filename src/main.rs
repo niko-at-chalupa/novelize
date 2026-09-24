@@ -13,6 +13,9 @@ use std::path::PathBuf;
 #[command(version, about, long_about = None)]
 struct Args {
     #[arg(short, long)]
+    template_game_dir: PathBuf,
+    
+    #[arg(short, long)]
     topic: String,
 
     #[arg(short, long)]
@@ -64,8 +67,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
         panic!("output_game_dir already exists")
     }
 
-    if !is_valid_renpy_sdk(&args.renpy_sdk) {
-        panic!("renpy sdk provided invalid")
+    if let Err(e) = is_valid_renpy_sdk(args.renpy_sdk.clone()) {
+        panic!("{}", e)
     }
 
     run_pipeline(

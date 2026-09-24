@@ -1,15 +1,35 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::{Command, Output};
+use std::fmt;
 
-pub fn is_valid_renpy_sdk(sdk_path: &Path) -> bool {
+#[derive(Debug)]
+pub enum RenPyError {
+    SdkNotFound,
+    SdkInvalid(PathBuf),
+}
+
+impl fmt::Display for RenPyError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::SdkNotFound => write!(f, "Ren'Py SDK not found"),
+            Self::SdkInvalid(p) => write!(f, "Ren'Py SDK {} is invalid", p.display()),
+        }
+    }
+}
+
+pub fn is_valid_renpy_sdk(sdk_path: PathBuf) -> Result<(), RenPyError> {
     if !sdk_path.is_dir() {
-        return false;
+        return Err(RenPyError::SdkInvalid(sdk_path));
     }
 
     let renpy_py = sdk_path.join("renpy.py");
     let lib_dir = sdk_path.join("lib");
 
-    renpy_py.is_file() && lib_dir.is_dir()
+    if renpy_py.is_file() && lib_dir.is_dir() {
+        Ok(())
+    } else {
+        Err(RenPyError::SdkInvalid(sdk_path))
+    }
 }
 
 pub fn run_renpy_lint(sdk_path: &Path, project_path: &Path) -> std::io::Result<Output> {
