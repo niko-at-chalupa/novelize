@@ -7,6 +7,7 @@ use std::fmt;
 pub enum RenPyError {
     SdkNotFound,
     SdkInvalid(PathBuf),
+    LintFailed(Output)
 }
 
 impl Error for RenPyError {}
@@ -16,6 +17,7 @@ impl fmt::Display for RenPyError {
         match self {
             Self::SdkNotFound => write!(f, "Ren'Py SDK not found"),
             Self::SdkInvalid(p) => write!(f, "Ren'Py SDK {} is invalid", p.display()),
+            Self::LintFailed(o) => write!(f, "Ren'Py lint failed:\n{}", String::from_utf8_lossy(&o.stderr)),
         }
     }
 }
