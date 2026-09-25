@@ -59,7 +59,7 @@ impl TemplateVn {
             return Err(anyhow!("path `{}` does not exist", game_path.display()));
         }
         if !game_path.is_dir() {
-            return Err(anyhow!("path `{}` is a file, and not a directory when it's expected to be the game directory", &self.paths.game.display()));
+            return Err(anyhow!("path `{}` is a file, and not a directory when it's expected to be the game directory", self.paths.game.display()));
         }
 
         for path in self
@@ -93,7 +93,7 @@ impl TemplateVn {
             .map_err(crate::renpy::RenPyError::Io)?;
         let lint_output = crate::renpy::run_renpy_lint(&sdk_path, &game_path)?;
         if !lint_output.status.success() {
-            return Err(crate::renpy::RenPyError::LintFailed(lint_output).into());
+            return Err(crate::renpy::RenPyError::LintFailed(lint_output));
         }
         Ok(())
     }
@@ -103,7 +103,7 @@ impl FromStr for TemplateVn {
     type Err = anyhow::Error;
 
     fn from_str(str: &str) -> Result<Self, anyhow::Error> {
-        let template_vn: Self = toml::from_str(&str)?;
+        let template_vn: Self = toml::from_str(str)?;
         Ok(template_vn)
     }
 }

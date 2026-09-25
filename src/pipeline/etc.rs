@@ -17,9 +17,9 @@ pub fn copy_dir_all(src: impl AsRef<Path>, dst: impl AsRef<Path>) -> std::io::Re
     Ok(())
 }
 
-pub fn clean_code_block_wrappers(text: &String) -> String {
+pub fn clean_code_block_wrappers(text: &str) -> String {
     let re = Regex::new(r"(?m)^```[^\r\n]*\r?\n?").unwrap();
-    re.replace(&text, "")
+    re.replace(text, "")
         .into_owned()
         .trim_end_matches("```")
         .trim()

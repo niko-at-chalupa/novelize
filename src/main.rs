@@ -33,7 +33,7 @@ struct Args {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    if let Err(_) = dotenv() {
+    if dotenv().is_err() {
         tracing::warn!("no env file found...");
     }
 

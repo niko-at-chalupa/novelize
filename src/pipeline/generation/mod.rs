@@ -24,18 +24,10 @@ pub async fn llm(
 }
 
 /// Context loaded from the template for the two generation stages.
+#[derive(Default)]
 pub struct ExtraContext {
     pub narrative: Vec<String>,
     pub dialogue: Vec<String>,
-}
-
-impl Default for ExtraContext {
-    fn default() -> Self {
-        Self {
-            narrative: vec![],
-            dialogue: vec![],
-        }
-    }
 }
 
 impl ExtraContext {

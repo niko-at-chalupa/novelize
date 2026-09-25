@@ -68,10 +68,10 @@ pub async fn run_pipeline(
 
     // Create target game folder by copying our template project
     if output_game_dir.exists() {
-        let _ = fs::remove_dir_all(&output_game_dir);
+        let _ = fs::remove_dir_all(output_game_dir);
     }
 
-    copy_template_directory(template_game_dir, &output_game_dir)?;
+    copy_template_directory(template_game_dir, output_game_dir)?;
 
     let scenes_dir = output_game_dir.join("game/scenes");
     fs::create_dir_all(&scenes_dir)?;
@@ -91,7 +91,7 @@ pub async fn run_pipeline(
         let script = generation::scenes::generate_scene(
             CHEAP_MODEL,
             client,
-            &scene,
+            scene,
             prev_scene_summary,
             &extra_context,
         )
@@ -126,7 +126,7 @@ label start:
     info!("[5/5] Verifying generated project with Ren'Py lint...");
 
     for attempt in 1..=max_fix_attempts {
-        let lint_output = run_renpy_lint(&sdk_path, &output_game_dir)?;
+        let lint_output = run_renpy_lint(sdk_path, output_game_dir)?;
         if lint_output.status.success() {
             info!("[5/5] Lint passed on attempt {}.", attempt);
             break;

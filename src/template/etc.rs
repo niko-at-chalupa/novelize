@@ -1,7 +1,7 @@
 use anyhow::anyhow;
-use std::path::{Component, PathBuf};
+use std::path::{Component, Path};
 
-pub(super) fn is_path_relative_and_bounded(path: &PathBuf) -> anyhow::Result<()> {
+pub(super) fn is_path_relative_and_bounded(path: &Path) -> anyhow::Result<()> {
     if path.is_absolute() {
         return Err(anyhow!("path `{}` must be relative, not absolute", path.display()));
     }
