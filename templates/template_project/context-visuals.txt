@@ -1,0 +1,15 @@
+# Visual Assets
+
+Use only the declared names below in generated Ren'Py scripts.
+
+## Sprites
+- ruby school: Ruby's neutral classroom expression.
+- ruby school happy: Ruby is warm, encouraging, or pleased.
+- ruby school sad: Ruby is disappointed, worried, or discussing a setback.
+- ruby school flustered: Ruby is embarrassed, surprised, or emotionally overwhelmed.
+
+## Backgrounds
+- bg classroom: The primary teaching setting.
+- bg campus: Outdoor school or transition scenes.
+
+The player character MC has no sprite. Keep sprite placement readable and hide or replace sprites when the speaker's expression changes.

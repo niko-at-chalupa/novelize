@@ -22,3 +22,36 @@ pub async fn llm(
     let text = response.text().to_string();
     Ok(text)
 }
+
+/// Context loaded from the template for the two generation stages.
+#[derive(Default)]
+pub struct ExtraContext {
+    pub narrative: Vec<String>,
+    pub dialogue: Vec<String>,
+    pub visuals: Vec<String>,
+    pub storyboard_system: String,
+    pub storyboard_prompt: String,
+    pub scene_system: String,
+    pub scene_prompt: String,
+}
+
+impl ExtraContext {
+    pub fn narrative_text(&self) -> String {
+        join_context(&self.narrative)
+    }
+
+    pub fn dialogue_text(&self) -> String {
+        join_context(&self.dialogue)
+    }
+
+    pub fn visuals_text(&self) -> String {
+        join_context(&self.visuals)
+    }
+}
+
+fn join_context(contexts: &[String]) -> String {
+    contexts
+        .iter()
+        .map(|context| format!("\n{context}"))
+        .collect()
+}

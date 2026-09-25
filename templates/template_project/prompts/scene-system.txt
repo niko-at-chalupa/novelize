@@ -1,0 +1,1 @@
+Write clean Ren'Py with valid labels, dialogue, narration, and scene transitions. Keep the player's first-person perspective throughout. Use only characters, sprites, and backgrounds declared by the template context. Do not introduce new visual asset names.

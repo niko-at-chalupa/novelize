@@ -1,3 +1,4 @@
+pub(crate) mod template;
 mod renpy;
 use dotenvy::dotenv;
 use google_ai_rs::Client;
@@ -12,6 +13,9 @@ use std::path::PathBuf;
 #[command(version, about, long_about = None)]
 struct Args {
     #[arg(short, long)]
+    template_game_dir: PathBuf,
+    
+    #[arg(long)]
     topic: String,
 
     #[arg(short, long)]
@@ -27,21 +31,9 @@ struct Args {
     num_scenes: u8,
 }
 
-fn base_dir() -> Result<PathBuf, Box<dyn Error>> {
-    let mut dir = std::env::current_dir()?;
-    while !dir.join("Cargo.toml").exists() {
-        if let Some(parent) = dir.parent() {
-            dir = parent.to_path_buf();
-        } else {
-            return Err("Could not find workspace root containing Cargo.toml".into());
-        }
-    }
-    Ok(dir)
-}
-
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    if let Err(_) = dotenv() {
+    if dotenv().is_err() {
         tracing::warn!("no env file found...");
     }
 
@@ -55,22 +47,20 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let client =
         Client::new(std::env::var("GEMINI_API_KEY").expect("GEMINI_API_KEY unset")).await?;
 
-    let base_dir = base_dir()?;
-
     let args = Args::parse();
 
     if args.output_game_dir.exists() {
         panic!("output_game_dir already exists")
     }
 
-    if !is_valid_renpy_sdk(&args.renpy_sdk) {
-        panic!("renpy sdk provided invalid")
+    if let Err(e) = is_valid_renpy_sdk(args.renpy_sdk.clone()) {
+        panic!("{}", e)
     }
 
     run_pipeline(
         &client,
         &args.topic,
-        &base_dir,
+        &args.template_game_dir,
         &args.output_game_dir,
         args.max_fix_attempts,
         &args.renpy_sdk,

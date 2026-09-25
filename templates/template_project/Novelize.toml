@@ -1,0 +1,29 @@
+[metadata]
+name = "novelize"
+stylized-name = "Novelize"
+version = "0.1.0"
+
+# This lists out _RELATIVE_ paths to things. Everything's required. No path can
+# go underneath this directory.
+[paths]
+game = "game"
+# Loaded into the model's context for storyboard/narrative generation.
+context-narrative = [
+    "context-narrative.txt",
+]
+# Loaded into the model's context for scene/dialogue generation.
+context-dialogue = [
+    "context-dialogue.txt",
+]
+# Names and usage rules for sprites, backgrounds, and other visual assets.
+context-visuals = [
+    "context-visuals.txt",
+]
+
+# Optional prompt sections. These let a template change generation behavior
+# without changing Novelize itself.
+[paths.prompts]
+storyboard-system = "prompts/storyboard-system.txt"
+storyboard-prompt = "prompts/storyboard-prompt.txt"
+scene-system = "prompts/scene-system.txt"
+scene-prompt = "prompts/scene-prompt.txt"
