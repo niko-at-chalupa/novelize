@@ -51,6 +51,28 @@ pub async fn run_pipeline(
             .iter()
             .map(|path| fs::read_to_string(template_game_dir.join(path)))
             .collect::<Result<_, _>>()?,
+        visuals: template
+            .paths()
+            .context_visuals()
+            .iter()
+            .map(|path| fs::read_to_string(template_game_dir.join(path)))
+            .collect::<Result<_, _>>()?,
+        storyboard_system: read_optional_template_file(
+            template_game_dir,
+            template.paths().prompts.storyboard_system.as_deref(),
+        )?,
+        storyboard_prompt: read_optional_template_file(
+            template_game_dir,
+            template.paths().prompts.storyboard_prompt.as_deref(),
+        )?,
+        scene_system: read_optional_template_file(
+            template_game_dir,
+            template.paths().prompts.scene_system.as_deref(),
+        )?,
+        scene_prompt: read_optional_template_file(
+            template_game_dir,
+            template.paths().prompts.scene_prompt.as_deref(),
+        )?,
     };
     info!("Checking if the template game is valid...");
     template.is_game_valid(template_game_dir, sdk_path.to_path_buf())?;
@@ -181,6 +203,12 @@ label start:
     }
 
     Ok(())
+}
+
+fn read_optional_template_file(root: &Path, path: Option<&Path>) -> std::io::Result<String> {
+    path.map(|path| fs::read_to_string(root.join(path)))
+        .transpose()
+        .map(|content| content.unwrap_or_default())
 }
 
 #[cfg(test)]

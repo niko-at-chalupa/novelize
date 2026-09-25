@@ -11,6 +11,10 @@ pub struct TemplateVnPaths {
     pub game: PathBuf,
     pub context_narrative: Vec<PathBuf>,
     pub context_dialogue: Vec<PathBuf>,
+    #[serde(default)]
+    pub context_visuals: Vec<PathBuf>,
+    #[serde(default)]
+    pub prompts: TemplatePromptPaths,
 }
 
 impl TemplateVnPaths {
@@ -21,6 +25,19 @@ impl TemplateVnPaths {
     pub(crate) fn context_dialogue(&self) -> &[PathBuf] {
         &self.context_dialogue
     }
+
+    pub(crate) fn context_visuals(&self) -> &[PathBuf] {
+        &self.context_visuals
+    }
+}
+
+#[derive(Default, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub struct TemplatePromptPaths {
+    pub storyboard_system: Option<PathBuf>,
+    pub storyboard_prompt: Option<PathBuf>,
+    pub scene_system: Option<PathBuf>,
+    pub scene_prompt: Option<PathBuf>,
 }
 
 #[derive(Deserialize)]
@@ -67,6 +84,11 @@ impl TemplateVn {
             .context_narrative
             .iter()
             .chain(self.paths.context_dialogue.iter())
+            .chain(self.paths.context_visuals.iter())
+            .chain(self.paths.prompts.storyboard_system.iter())
+            .chain(self.paths.prompts.storyboard_prompt.iter())
+            .chain(self.paths.prompts.scene_system.iter())
+            .chain(self.paths.prompts.scene_prompt.iter())
         {
             etc::is_path_relative_and_bounded(path)?;
             let context_path = root.join(path);

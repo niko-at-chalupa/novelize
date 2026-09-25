@@ -32,17 +32,27 @@ All narrative and educational summary descriptions must be from a first-person p
 Output ONLY valid JSON. No markdown blocks, no commentary. Do NOT introduce characters that are not listed in the character info.
 
 Character Info:
-    {}"#,
+  {}
+
+Template-specific storyboard instructions:
+{}"#,
         num_scenes,
-        extra_context.narrative_text()
+    extra_context.narrative_text(),
+    extra_context.storyboard_system
     );
 
     let storyboard_prompt = format!(
         r#"Educational Topic: {}
-Character Info: {}
+      Character Info: {}
+      Visual assets and naming:
+      {}
+      Template-specific storyboard prompt instructions:
+      {}
 Generate the JSON storyboard now."#,
         topic,
-        extra_context.narrative_text()
+        extra_context.narrative_text(),
+        extra_context.visuals_text(),
+        extra_context.storyboard_prompt
     );
 
     let cleaned_json = {

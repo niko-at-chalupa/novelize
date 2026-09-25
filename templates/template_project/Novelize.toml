@@ -15,3 +15,15 @@ context-narrative = [
 context-dialogue = [
     "context-dialogue.txt",
 ]
+# Names and usage rules for sprites, backgrounds, and other visual assets.
+context-visuals = [
+    "context-visuals.txt",
+]
+
+# Optional prompt sections. These let a template change generation behavior
+# without changing Novelize itself.
+[paths.prompts]
+storyboard-system = "prompts/storyboard-system.txt"
+storyboard-prompt = "prompts/storyboard-prompt.txt"
+scene-system = "prompts/scene-system.txt"
+scene-prompt = "prompts/scene-prompt.txt"

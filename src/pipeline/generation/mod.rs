@@ -28,6 +28,11 @@ pub async fn llm(
 pub struct ExtraContext {
     pub narrative: Vec<String>,
     pub dialogue: Vec<String>,
+    pub visuals: Vec<String>,
+    pub storyboard_system: String,
+    pub storyboard_prompt: String,
+    pub scene_system: String,
+    pub scene_prompt: String,
 }
 
 impl ExtraContext {
@@ -37,6 +42,10 @@ impl ExtraContext {
 
     pub fn dialogue_text(&self) -> String {
         join_context(&self.dialogue)
+    }
+
+    pub fn visuals_text(&self) -> String {
+        join_context(&self.visuals)
     }
 }
 

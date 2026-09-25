@@ -19,6 +19,8 @@ pub async fn generate_scene(
             Setting: {}\n\
             Summary: {}\n\
             Learning Objectives: {:?}\n\
+            Visual assets and naming:\n\
+            {}\n\
             ---\
             {}
         ",
@@ -28,6 +30,7 @@ pub async fn generate_scene(
         scene.setting,
         scene.summary,
         scene.learning_objectives,
+        extra_context.visuals_text(),
         extra_context.dialogue_text()
     );
 
@@ -38,16 +41,15 @@ pub async fn generate_scene(
         ));
     }
 
-    scene_prompt.push_str(
+    scene_prompt.push_str(&format!(
         "Output ONLY the Ren'Py code starting with `label <scene_id>:` and ending with `return`. \
             Do not wrap it in markdown code blocks. \
             The visual novel must be written entirely in the first-person perspective of the player ('I', 'me', 'my'). \
             Use MC (mc) as character short name for player's spoken dialogue. MC must never appear as a sprite on screen. \
             Use Ruby (r) as character short name. If other characters are introduced, define them with appropriate short names. \
-            Show/hide sprites appropriately: \
-            - Ruby sprites: ruby school, ruby school happy, ruby school sad, ruby school flustered \
-            - Backgrounds: bg classroom, bg campus \
-            - Ruby traits: she likes the player, does NOT like metaphors and analogies, does NOT like misbehaved or rude people. \
+            Show/hide sprites appropriately according to the template visual assets. \
+            Template-specific scene instructions:\n\
+            {}\
             Example:\n\
             label scene_1_intro:\n\
                 scene bg classroom\n\
@@ -55,15 +57,19 @@ pub async fn generate_scene(
                 \"I walk into the classroom, and Ruby smiles warmly at me.\"\n\
                 r \"Hello! Ready to learn? Let's keep it clear and direct today, no silly metaphors.\"\n\
                 mc \"Yes, thank you. Let's do it.\"\n\
-                return"
-    );
+                return",
+            extra_context.scene_prompt
+    ));
 
     let clean_script = {
         let scene_script = llm(
             client,
             model,
             &scene_prompt,
-            "You are an expert Ren'Py writer. Write clean dialogue and sprite positions. Output ONLY the raw Ren'Py script for the requested label. No markdown code blocks."
+            &format!(
+                "You are an expert Ren'Py writer. Write clean dialogue and sprite positions. Output ONLY the raw Ren'Py script for the requested label. No markdown code blocks.\n\nTemplate-specific scene system instructions:\n{}",
+                extra_context.scene_system
+            )
         ).await?;
         clean_code_block_wrappers(&scene_script)
     };
