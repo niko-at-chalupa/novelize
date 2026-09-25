@@ -7,7 +7,11 @@ version = "0.1.0"
 # go underneath this directory.
 [paths]
 game = "game"
-# Loaded into the model's context when generating dialogue or narrative.
-context = [
-    "character_info.txt",
+# Loaded into the model's context for storyboard/narrative generation.
+context-narrative = [
+    "context-narrative.txt",
+]
+# Loaded into the model's context for scene/dialogue generation.
+context-dialogue = [
+    "context-dialogue.txt",
 ]

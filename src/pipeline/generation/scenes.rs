@@ -2,7 +2,7 @@ use std::error::Error;
 
 use super::super::etc::clean_code_block_wrappers;
 use super::super::story::SceneOutline;
-use super::llm;
+use super::{llm, ExtraContext};
 use google_ai_rs::Client;
 
 pub async fn generate_scene(
@@ -10,7 +10,7 @@ pub async fn generate_scene(
     client: &Client,
     scene: &SceneOutline,
     prev_scene_summary: Option<String>,
-    char_info: &str,
+    extra_context: &ExtraContext,
 ) -> Result<String, Box<dyn Error>> {
     let mut scene_prompt = format!(
         "Generate a Ren'Py scene script for: \"{}\".\n\
@@ -19,16 +19,16 @@ pub async fn generate_scene(
             Setting: {}\n\
             Summary: {}\n\
             Learning Objectives: {:?}\n\
-            Characters Present: {:?}\n\n\
-            Character Profiles:\n{}\n\n",
+            ---\
+            {}
+        ",
         scene.title,
         scene.id,
         scene.scene_type,
         scene.setting,
         scene.summary,
         scene.learning_objectives,
-        scene.characters_present,
-        char_info
+        extra_context.dialogue_text()
     );
 
     if let Some(prev) = &prev_scene_summary {

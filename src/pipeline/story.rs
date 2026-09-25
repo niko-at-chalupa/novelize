@@ -25,7 +25,6 @@ pub struct SceneOutline {
     pub setting: Setting,
     pub summary: String,
     pub learning_objectives: Vec<String>,
-    pub characters_present: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

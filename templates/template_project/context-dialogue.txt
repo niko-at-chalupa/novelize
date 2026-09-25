@@ -1,11 +1,8 @@
+# Character Information
+
 MC:
 - Role: The protagonist (Player / First-person perspective). No sprites (never appears on screen).
-- Color: #ffffff
 
 Ruby:
 - Role: Knowledgeable mentor / tutor. She is patient, clear, and logical. She likes the player and wants them to succeed, but has no patience for misbehaved or rude people. She prefers direct explanations and strongly dislikes metaphors and analogies.
 - Sprites: ruby school, ruby school happy, ruby school sad, ruby school flustered
-- Color: #ffaaaa
-
-# Room for new characters:
-# You can add more characters here following the same format.

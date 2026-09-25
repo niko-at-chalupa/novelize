@@ -1,6 +1,6 @@
 use super::super::etc::clean_code_block_wrappers;
 use super::super::story::Storyboard;
-use super::llm;
+use super::{llm, ExtraContext};
 use google_ai_rs::Client;
 use std::error::Error;
 
@@ -8,7 +8,7 @@ pub async fn generate_storyboard(
     model: &str,
     client: &Client,
     topic: &str,
-    char_info: &str,
+    extra_context: &ExtraContext,
     num_scenes: u8,
 ) -> Result<Storyboard, Box<dyn Error>> {
     let storyboard_system = format!(
@@ -24,7 +24,6 @@ The JSON must match this exact schema:
       "setting": "classroom",
       "summary": "Ruby explains the core concept directly to the player. The player listens attentively. Ruby shows she likes the player.",
       "learning_objectives": ["Objective 1", "Objective 2"],
-      "characters_present": ["Ruby"]
     }}
   ]
 }}
@@ -35,14 +34,15 @@ Output ONLY valid JSON. No markdown blocks, no commentary. Do NOT introduce char
 Character Info:
     {}"#,
         num_scenes,
-        char_info
+        extra_context.narrative_text()
     );
 
     let storyboard_prompt = format!(
         r#"Educational Topic: {}
 Character Info: {}
 Generate the JSON storyboard now."#,
-        topic, char_info
+        topic,
+        extra_context.narrative_text()
     );
 
     let cleaned_json = {
