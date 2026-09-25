@@ -1,3 +1,4 @@
+use std::error::Error;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Output};
 use std::fmt;
@@ -7,6 +8,8 @@ pub enum RenPyError {
     SdkNotFound,
     SdkInvalid(PathBuf),
 }
+
+impl Error for RenPyError {}
 
 impl fmt::Display for RenPyError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
