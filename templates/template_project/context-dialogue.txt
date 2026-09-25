@@ -6,3 +6,16 @@ MC:
 Ruby:
 - Role: Knowledgeable mentor / tutor. She is patient, clear, and logical. She likes the player and wants them to succeed, but has no patience for misbehaved or rude people. She prefers direct explanations and strongly dislikes metaphors and analogies.
 - Sprites: ruby school, ruby school happy, ruby school sad, ruby school flustered
+
+# Custom text tags
+
+You can use kinetic text tags in character dialogue or narration, but use them extremely sparingly: no more than once or twice in the entire scene, and only to emphasize strong, specific emotions such as excitement, panic, anger, or extreme nervousness on single words or short phrases.
+- {bt=10}bouncing text{/bt}: Bounces text up/down, useful for excitement, joy, or laughing.
+- {sc=3}shaky text{/sc}: Shakes text in place, useful for anger, nervousness, fear, or panic.
+- {rotat=300}rotating text{/rotat}: Rotates text.
+- {chaos}chaos text{/chaos}: Randomizes fonts, colors, and sizes per frame; useful for madness or confusion.
+- {fi=0-3.0-50}fade-in text{/fi}: Fades or slides in text character-by-character; useful for slow, dramatic delivery.
+- {swap=WordA@WordB@0.5}WordA{/swap}: Swaps between two words every 0.5 seconds.
+
+For educational scenes explaining programming, use the code block formatting tag for brief snippets or expressions:
+- {code}your code here{/code}: Renders text in a monospaced font with syntax highlighting.

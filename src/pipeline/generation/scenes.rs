@@ -48,25 +48,13 @@ pub async fn generate_scene(
             - Ruby sprites: ruby school, ruby school happy, ruby school sad, ruby school flustered \
             - Backgrounds: bg classroom, bg campus \
             - Ruby traits: she likes the player, does NOT like metaphors and analogies, does NOT like misbehaved or rude people. \
-            \n\
-            You can use kinetic text tags to animate text in character dialogue or narration. You must use them EXTREMELY sparingly (no more than once or twice in the entire scene), and ONLY to emphasize strong, specific emotions (such as excitement, panic, anger, or extreme nervousness) on single words or short phrases: \
-            - {bt=10}bouncing text{/bt}: Bounces text up/down (great for excitement, joy, or laughing). \
-            - {sc=3}shaky text{/sc}: Shakes text in place (great for anger, nervousness, fear, or panic). \
-            - {rotat=300}rotating text{/rotat}: Rotates text. \
-            - {chaos}chaos text{/chaos}: Randomizes fonts/colors/sizes per frame (good for madness/confusion). \
-            - {fi=0-3.0-50}fade-in text{/fi}: Fades/slides in character-by-character (good for slow, dramatic delivery). \
-            - {swap=WordA@WordB@0.5}WordA{/swap}: Swaps between WordA and WordB every 0.5s. \
-            \n\
-            For educational scenes explaining programming, you also have a code block formatting tag: \
-            - {code}your code here{/code}: Renders the text in a monospaced font with syntax highlighting (perfect for displaying brief code snippets or expressions). \
-            \n\
             Example:\n\
             label scene_1_intro:\n\
                 scene bg classroom\n\
                 show ruby school happy at left\n\
                 \"I walk into the classroom, and Ruby smiles warmly at me.\"\n\
-                r \"Hello! Ready to learn? Let's keep it {bt=8}clear and direct{/bt} today, no silly metaphors.\"\n\
-                mc \"{sc=2}Yes, thank you.{/sc} Let's do it.\"\n\
+                r \"Hello! Ready to learn? Let's keep it clear and direct today, no silly metaphors.\"\n\
+                mc \"Yes, thank you. Let's do it.\"\n\
                 return"
     );
 
