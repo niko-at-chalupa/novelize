@@ -14,10 +14,6 @@ pub struct TemplateVnPaths {
 }
 
 impl TemplateVnPaths {
-    pub(crate) fn game(&self) -> &Path {
-        &self.game
-    }
-
     pub(crate) fn context_narrative(&self) -> &[PathBuf] {
         &self.context_narrative
     }
@@ -29,12 +25,14 @@ impl TemplateVnPaths {
 
 #[derive(Deserialize)]
 #[serde(rename_all = "kebab-case")]
+#[allow(dead_code)]
 pub struct TemplateVnMetadata {
     pub name: String,
     pub stylized_name: String,
     pub version: String,
 }
 
+#[allow(dead_code)]
 #[derive(Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct TemplateVn {

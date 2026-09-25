@@ -1,9 +1,10 @@
 use std::error::Error;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Output};
-use std::fmt::{self, write};
+use std::fmt::self;
 
 #[derive(Debug)]
+#[allow(dead_code)]
 pub enum RenPyError {
     SdkNotFound,
     SdkInvalid(PathBuf),
