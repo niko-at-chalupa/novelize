@@ -1,22 +1,32 @@
 mod etc;
 use serde::Deserialize;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use anyhow::anyhow;
 use std::str::FromStr;
 
 #[derive(Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct TemplateVnPaths {
-    game: PathBuf,
-    context: Vec<PathBuf>,
+    pub game: PathBuf,
+    pub context: Vec<PathBuf>,
+}
+
+impl TemplateVnPaths {
+    pub(crate) fn game(&self) -> &Path {
+        &self.game
+    }
+
+    pub(crate) fn context(&self) -> &[PathBuf] {
+        &self.context
+    }
 }
 
 #[derive(Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct TemplateVnMetadata {
-    name: String,
-    stylized_name: String,
-    version: String,
+    pub name: String,
+    pub stylized_name: String,
+    pub version: String,
 }
 
 #[derive(Deserialize)]
@@ -46,6 +56,15 @@ impl TemplateVn {
             }
         }
 
+        Ok(())
+    }
+
+    pub fn is_game_valid(&self, sdk_path: PathBuf) -> Result<(), crate::renpy::RenPyError> {
+        crate::renpy::is_valid_renpy_sdk(sdk_path.clone())?;
+        let lint_output = crate::renpy::run_renpy_lint(&sdk_path, &self.paths.game)?;
+        if !lint_output.status.success() {
+            return Err(crate::renpy::RenPyError::LintFailed(lint_output).into());
+        }
         Ok(())
     }
 }
