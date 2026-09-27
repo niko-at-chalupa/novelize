@@ -21,13 +21,14 @@ The JSON must match this exact schema:
       "id": "scene_1_intro",
       "title": "Introduction to Concepts",
       "type": "educational",
-      "setting": "classroom",
+      "setting": "A descriptive location or a visual asset name/path from the template",
       "summary": "Ruby explains the core concept directly to the player. The player listens attentively. Ruby shows she likes the player.",
       "learning_objectives": ["Objective 1", "Objective 2"],
     }}
   ]
 }}
 Design a story with {} scenes containing a mix of educational core concepts and narrative B-plot character moments.
+Scene type and setting are free-form strings; choose an appropriate type and describe the location or use a matching visual asset name/path from the template context.
 All narrative and educational summary descriptions must be from a first-person perspective ('I', 'me', 'my').
 Output ONLY valid JSON. No markdown blocks, no commentary. Do NOT introduce characters that are not listed in the character info.
 
